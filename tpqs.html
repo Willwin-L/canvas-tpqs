@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>图片去色</title>
+        <style>
+            canvas{border: 2px solid #ccc}
+        </style>
+    </head>
+    <body>
+        <canvas id="mycanvas" width="800" height="600"></canvas>
+<hr/>
+      
+      <button onclick="dropblue()">去掉蓝色</button>
+      <button onclick="dropcolo()">去色</button>
+      <button onclick="dropcolo2()">去色2</button>
+      <button onclick="dropcolo3()">反色</button>
+      <button onclick="show()">还原</button>
+
+        <script>
+            var mycanvas = document.getElementById('mycanvas');
+            var con = mycanvas.getContext('2d');
+
+            var img = new Image();
+            img.src='1.jpg';
+            img.onload=function(){
+                con.drawImage(img,0,0,800,600);
+            }
+
+
+            function show(){
+            
+                con.drawImage(img,0,0,mycanvas.width,mycanvas.height);
+            
+            }
+            
+            function dropblue(){
+                var imgdata = con.getImageData(0,0,mycanvas.width,mycanvas.height);
+                for(var i=0;i<imgdata.data.length;i+=4){
+//                    imgdata['data'][i]=    //红色
+//                    imgdata['data'][i+1]=    //绿色
+//                    imgdata['data'][i+2]= 0;   //蓝色
+//                    imgdata['data'][i+3]=    //透明度
+                    if(imgdata['data'][i+2]>10){
+                        imgdata['data'][i+2] -=10;
+                    }
+                
+                }
+                
+                con.putImageData(imgdata,0,0);
+            
+            }
+
+            
+            function dropcolo(){
+                show();
+                var imgdata = con.getImageData(0,0,mycanvas.width,mycanvas.height);
+                for(var i=0;i<imgdata.data.length;i+=4){
+                    var r = imgdata['data'][i];
+                    var g = imgdata['data'][i+1];
+                    var b = imgdata['data'][i+2];
+                    
+                    var av = (r+g+b)/3;
+                    imgdata['data'][i] = imgdata['data'][i+1] = imgdata['data'][i+2] = av;
+
+                }
+
+                con.putImageData(imgdata,0,0);
+
+            }
+
+            
+            function dropcolo2(){
+                show()
+                var imgdata = con.getImageData(0,0,mycanvas.width,mycanvas.height);
+                for(var i=0;i<imgdata.data.length;i+=4){
+                    var r = imgdata['data'][i];
+                    var g = imgdata['data'][i+1];
+                    var b = imgdata['data'][i+2];
+                    //Rx0.3+Gx0.59+Bx0.11
+                    var av = 0.3*r+0.59*g+0.11*b;
+                    imgdata['data'][i] = imgdata['data'][i+1] = imgdata['data'][i+2] = av;
+
+                }
+
+                con.putImageData(imgdata,0,0);
+
+            }
+            
+            
+            function dropcolo3(){
+                var imgdata = con.getImageData(0,0,mycanvas.width,mycanvas.height);
+                for(var i=0;i<imgdata.data.length;i+=4){
+                    imgdata['data'][i]=  255- imgdata['data'][i]; //红色
+                    imgdata['data'][i+1]= 255-imgdata['data'][i+1];   //绿色
+                    imgdata['data'][i+2]= 255-imgdata['data'][i+2];   //蓝色
+                }
+
+                con.putImageData(imgdata,0,0);
+
+            }
+        </script>
+    </body>
+</html>
